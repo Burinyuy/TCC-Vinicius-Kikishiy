@@ -1,0 +1,15 @@
+material sinkMat/Diffuse
+{
+    receive_shadows off
+    technique
+    {
+        pass
+        {
+            texture_unit   
+            {
+             texture sink1.png
+            }
+        }
+        
+    }
+}

@@ -1,0 +1,15 @@
+material counterMat/Diffuse
+{
+    receive_shadows off
+    technique
+    {
+        pass
+        {
+            texture_unit   
+            {
+             texture counter1.png
+            }
+        }
+        
+    }
+}

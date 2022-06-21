@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<package format="3">
+
+  <name>moveit_python</name>
+  <version>0.4.3</version>
+  <description>
+    A pure-python interaface to the MoveIt! ROS API.
+  </description>
+  <author>Michael Ferguson</author>
+  <maintainer email="fergs@botnuvo.com">Michael Ferguson</maintainer>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/moveit_python</url>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>tf</build_export_depend>
+  
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>moveit_msgs</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-pyassimp</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-pyassimp</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>shape_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>tiago_dual_2dnav</exec_depend>
+  <exec_depend>tiago_dual_maps</exec_depend>
+  <exec_depend>tiago_dual_laser_sensors</exec_depend>
+
+
+</package>
