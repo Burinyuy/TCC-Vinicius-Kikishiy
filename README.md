@@ -34,5 +34,5 @@ roslaunch mechatronics_final_thesis segment_table.launch show_rviz:=false
 roslaunch mechatronics\_final\_thesis cylinder_detector.launch
 ```
 ```
-rosrun mechatronics_final_thesis final_thesis_I|.py 
+rosrun mechatronics_final_thesis final_thesis_II.py 
 ```
