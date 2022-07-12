@@ -42,7 +42,7 @@
 
   <group ns="$(arg namespace)">
 
-    <include file="$(find tiago_dual_gazebo_tcc)/launch/tiago_dual_gazebo_tcc.launch">
+    <include file="$(find mechatronics_final_thesis)/launches/tiago_dual_gazebo_tcc.launch">
       <arg name="world"      value="$(arg world)"/>
       <arg name="end_effector_left"  value="$(arg end_effector_left)"/>
       <arg name="end_effector_right"  value="$(arg end_effector_right)"/>

@@ -44,13 +44,12 @@ def cylinderCallback(pose_message):
     z_c=pose_message.pose.position.z
 
 def poseCallback(pose_message):
-    global yaw,quaternion_callback
-    #recebe a orientação do robo em quaternios
+    global yaw,quaternion_callback#recebe a orientacao do robo em quaternios
     quaternion_callback[0] = pose_message.pose.pose.orientation.x
     quaternion_callback[1] = pose_message.pose.pose.orientation.y
     quaternion_callback[2] = pose_message.pose.pose.orientation.z
     quaternion_callback[3] = pose_message.pose.pose.orientation.w
-    #transformação de quaternios para euler
+    #transformacao de quaternios para euler
     rpy=tf.transformations.euler_from_quaternion(quaternion_callback)
     yaw=rpy[2]
 
@@ -130,7 +129,7 @@ def rotate(velocity_publisher, angular_speed, desired_angle):
     t0 = rospy.Time.now().to_sec() #define o tempo inicial
     relative_angle_degree = math.degrees(abs(relative_angle_radians))
    
-    while True :#inicia a rotação do robo
+    while True :#inicia a rotacao do robo
         velocity_publisher.publish(velocity_message) #publica a velocidade
         t1 = rospy.Time.now().to_sec()
         current_angle_degree = (t1-t0)*angular_speed_degree #obtem a posicao angular atual
@@ -149,14 +148,14 @@ def rotate(velocity_publisher, angular_speed, desired_angle):
 def move_arm(x,y,z,roll,pitch,yaw,side,wait):
     print("start moving")   
     arm_goal = PoseStamped() #cria uma mensagem do tipo PoseStamped
-    quaternion = tf.transformations.quaternion_from_euler(roll,pitch,yaw)#transformaçao de Euler para quaternio
+    quaternion = tf.transformations.quaternion_from_euler(roll,pitch,yaw)#transformacao de Euler para quaternio
 
     arm_goal.header.frame_id="base_footprint" #define a base do robo como frame de coordenada fixa
     arm_goal.header.stamp = rospy.Time.now() 
-    arm_goal.pose.position.x = x #define a posição desejada
+    arm_goal.pose.position.x = x #define a posicao desejada
     arm_goal.pose.position.y = y
     arm_goal.pose.position.z = z
-    arm_goal.pose.orientation.x=quaternion[0] #define a orientação em quaternios
+    arm_goal.pose.orientation.x=quaternion[0] #define a orientacao em quaternios
     arm_goal.pose.orientation.y=quaternion[1]
     arm_goal.pose.orientation.z=quaternion[2]
     arm_goal.pose.orientation.w = quaternion[3]
@@ -166,7 +165,7 @@ def move_arm(x,y,z,roll,pitch,yaw,side,wait):
 
 def gripper(state,side):
     client=actionlib.SimpleActionClient('/gripper_'+side+'_controller/follow_joint_trajectory',FollowJointTrajectoryAction) #Cria o Client
-    client.wait_for_server() #espera a confirmação do Client
+    client.wait_for_server() #espera a confirmacao do Client
 
     goal=FollowJointTrajectoryGoal() #Mensagem para definir o objetivo
     traj=JointTrajectory() #Mensagem da trajetoria
@@ -178,7 +177,7 @@ def gripper(state,side):
     header.stamp=rospy.Time.now()
     header.frame_id=''
 
-    path_tol.name='path' #definição de  tolerancias baixas
+    path_tol.name='path' #definicao de  tolerancias baixas
     path_tol.position=0.1
     path_tol.velocity=0.1
     path_tol.acceleration=0.1
@@ -204,7 +203,7 @@ def gripper(state,side):
     else:
         print("ERROR")
     
-    point.velocities=[] #informações para se mover a garra
+    point.velocities=[] #informacoes para se mover a garra
     point.accelerations=[]
     point.time_from_start.secs=1
     point.time_from_start.nsecs=0
@@ -225,7 +224,7 @@ def move_torso(state):
     torso_point=JointTrajectoryPoint() #mensagem do ponto desejado
     torso_path_tol=JointTolerance() #mesnagem da tolerancia do percurso
     torso_goal_tol=JointTolerance() #mensagem da tolerancia do objetivo
-    torso_header=Header() #definição do resto das mensagens
+    torso_header=Header() #definicao do resto das mensagens
     torso_header.seq=1
     torso_header.stamp=rospy.Time.now()
     torso_header.frame_id=''
@@ -255,7 +254,7 @@ def move_torso(state):
     else:
         print("ERROR")
     
-    torso_point.velocities=[] #informações necessarias para mover o torso
+    torso_point.velocities=[] #informacoes necessarias para mover o torso
     torso_point.accelerations=[]
     torso_point.time_from_start.secs=1
     torso_point.time_from_start.nsecs=0
@@ -312,7 +311,6 @@ def pick(velocity_publisher, start):
     global xc,yc,zc,i,xp,yp,zp,zc_up
     move_torso("up")
     move_head("down")
-    
     for i in range(2):
         print("posicao do cilindro x: ", x_c,", y: ",y_c,", z:",z_c)
         time.sleep(5) #aguarda para o recebimento da mensagem
@@ -321,41 +319,42 @@ def pick(velocity_publisher, start):
             yc=y_c
             zc=z_c
             zc_up=1.15
-            #salva informações para realizar o place
+            #salva informacoes para realizar o place
             zp[i]=zc
+            yp[i]=yc
             zp_up[i]=zc_up
-            print("posicao recebida x: ", xc,", y: ",yc,", z:",zc) #posição enviada com destino da gara do robo
+            print("posicao recebida x: ", xc,", y: ",yc,", z:",zc) #posicao enviada com destino da gara do robo
             
             if i==2: #encerra o Pick caso o segundo objeto esteja do mesmo lado do primeiro
                 if (yp[0]>0 and yp[1]>0) or(yp[0]<0 and yp[1]<0):
                     break
            
             if(yc>0):
-                side = "left" #define o braço a ser movimentado
-                gripper("open",side)     #pontos adicionais da movimentação do braço        
+                side = "left" #define o braco a ser movimentado
+                gripper("open",side)     #pontos adicionais da movimentacao do braco        
                 move_arm(0.035, 0.596, 1.465, -2.61799, -1.48353, -0.610865,side,True)
                 move_arm(0.529, 0.138, zc_up, 3.14159, 0, 0,side,True)
             else:
-                side = "right" #define o braço a ser movimentado
-                gripper("open",side)   #pontos adicionais da movimentação do braço 
+                side = "right" #define o braco a ser movimentado
+                gripper("open",side)   #pontos adicionais da movimentacao do braco 
                 move_arm(0.035, -0.596, 1.465, -2.61799, -1.48353, -0.610865,side,True)
                 move_arm(0.529, -0.138, zc_up, 3.14159, 0, 0,side,True)
 
 
             move_arm(0.65, yc, zc, 3.14159, 0, 0,side,True)
-            move_arm(xc, yc, zc, 3.14159, 0, 0,side,True)#move o braço ate a posição recebida
+            move_arm(xc, yc, zc, 3.14159, 0, 0,side,True)#move o braco ate a posicao recebida
 
             gripper("close",side)#fecha a garra
-            move_arm(xc, yc, zc_up,  3.14159, 0, 0,side,True) #pontos adicionais da movimentação do braço 
+            move_arm(xc, yc, zc_up,  3.14159, 0, 0,side,True) #pontos adicionais da movimentacao do braco 
 
             if(yc>0):
-                move_arm(0.529, 0.138, zc_up,  3.14159, 0, 0,side,True) #posição final do braço após o Pick
+                move_arm(0.529, 0.138, zc_up,  3.14159, 0, 0,side,True) #posicao final do braco apos o Pick
             else:
                move_arm(0.529, -0.138, zc_up,  3.14159, 0, 0,side,True)    
     else:
         print("Completed successfully")
-        move_head("up")#levanta a cabeça do robo
-        move_to_goal(velocity_publisher,counter[0],counter[1],counter[2]) #define e posição do próximo percurso
+        move_head("up")#levanta a cabeca do robo
+        move_to_goal(velocity_publisher,counter[0],counter[1],counter[2]) #define e posicao do proximo percurso
         place("go") #inicia o Place
 
 def place(start):
@@ -365,19 +364,19 @@ def place(start):
         if start=="go":
             print("Initiating Place")
             if i==2:
-                if (yp[0]>0 and yp[1]>0) or(yp[0]<0 and yp[1]<0): #encerra o Place caso só exista um objeto com o TIAGo++
+                if (yp[0]>0 and yp[1]>0) or(yp[0]<0 and yp[1]<0): #encerra o Place caso so exista um objeto com o TIAGo++
                     break  
             if(yp[i]>0):
-                side = "left" #define o braço a ser movimentado
-                move_arm(0.529, 0.138, 1.15,  3.14159, 0, 0,side,True) #Verifica se o braço não mudou de posição durante o percurso
-                #define as posições do place
+                side = "left" #define o braco a ser movimentado
+                move_arm(0.529, 0.138, 1.15,  3.14159, 0, 0,side,True) #Verifica se o braco nao mudou de posicao durante o percurso
+                #define as posicoes do place
                 xp[i]=0.818
                 yp[i]=0.085
 
             else:
-                side = "right" #define o braço a ser movimentado
-                move_arm(0.529, -0.138, 1.15,  3.14159, 0, 0,side,True) #Verifica se o braço não mudou de posição durante o percurso
-                #define as posições do place
+                side = "right" #define o braco a ser movimentado
+                move_arm(0.529, -0.138, 1.15,  3.14159, 0, 0,side,True) #Verifica se o braco nao mudou de posicao durante o percurso
+                #define as posicoes do place
                 xp[i]=0.818
                 yp[i]=-0.085  
 
@@ -399,7 +398,7 @@ def place(start):
     else:
         print("Completed successfully")
         move_head("up")
-        move_to_goal(velocity_publisher,home[0],home[1],home[2])#define e posição do próximo percurso
+        move_to_goal(velocity_publisher,home[0],home[1],home[2])#define e posicao do proximo percurso
         print("First task finnished")
 
 def task(start):
@@ -414,14 +413,15 @@ if __name__ == '__main__':
         cmd_vel_topic='/mobile_base_controller/cmd_vel' #topic da velocidade
         velocity_publisher = rospy.Publisher(cmd_vel_topic, Twist, queue_size=10) #Publica a velocidade
     
-        position_topic = "/robot_pose" #topic da posição do robo
-        pose_subscriber = rospy.Subscriber(position_topic, PoseWithCovarianceStamped, poseCallback) #Subscreve a posição
+        position_topic = "/robot_pose" #topic da posicao do robo
+        pose_subscriber = rospy.Subscriber(position_topic, PoseWithCovarianceStamped, poseCallback) #Subscreve a posicao
 
-        position_topic = "/cylinder_detector/marker" #topic da posição do cilindro
-        pose_subscriber = rospy.Subscriber(position_topic, Marker, cylinderCallback) #subscreve a posição do cilindro
+        position_topic = "/cylinder_detector/marker" #topic da posicao do cilindro
+        pose_subscriber = rospy.Subscriber(position_topic, Marker, cylinderCallback) #subscreve a posicao do cilindro
 
         print('start operation') 
-        task("go") #inicia a operação
+        task("go") #inicia a operacao
+   
        
     except rospy.ROSInterruptException:
         rospy.loginfo("node terminated.")   
